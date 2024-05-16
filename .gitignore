@@ -3,3 +3,4 @@
 node_modules
 chatgpt-env
 !chatgpt-env/readme.md
+.DS_Store
