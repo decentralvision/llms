@@ -1,5 +1,6 @@
 import pinecone
 import openai
+import os
 
 # Initialize Pinecone
 pinecone.init(api_key='YOUR_PINECONE_API_KEY', environment='us-west1-gcp')  # Specify your Pinecone environment if needed
@@ -9,9 +10,8 @@ index_name = 'gpt4-index'
 if index_name not in pinecone.list_indexes():
     pinecone.create_index(index_name, dimension=768)  # Assuming embedding dimension is 768
 index = pinecone.Index(index_name)
-
 # Initialize OpenAI API
-openai.api_key = 'YOUR_OPENAI_API_KEY'
+openai.api_key = os.getenv('open_ai_key')
 
 def embed_text(text):
     # Use OpenAI's API to get the text embedding (assuming GPT-4 or another model that supports embeddings)
