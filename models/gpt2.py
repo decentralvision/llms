@@ -104,3 +104,6 @@ results = query_model(query, sentences, sentence_embeddings)
 
 for result in results:
     print(f"Score: {result[1]:.4f} - Sentence: {result[0]}")
+
+for result in results:
+    print(f"Score: {result[1]:.4f} - Sentence: {result[0]}")
