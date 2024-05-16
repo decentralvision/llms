@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  pinecone:
+    image: pinecone/pinecone:latest
+    container_name: pinecone
+    ports:
+      - "8080:8080"
+    environment:
+      - PINECONE_API_KEY=your_api_key
+    volumes:
+      - pinecone_data:/var/lib/pinecone
+
+volumes:
+  pinecone_data:
