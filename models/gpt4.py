@@ -1,11 +1,18 @@
-import openai
+
+from openai import OpenAI
 import fitz  # PyMuPDF
 import pandas as pd
 import torch, sys, os
 from sentence_transformers import SentenceTransformer, util
 
 # Set up your OpenAI API key
-openai.api_key = os.getenv('open_ai_key')
+# openai.api_key = os.getenv('open_ai_key')
+
+openai_client = OpenAI(
+    # This is the default and can be omitted
+    api_key=os.getenv("open_ai_key"),
+)
+
 
 # Extract text from CSV
 def extract_text_from_csv(csv_path):
@@ -50,13 +57,25 @@ sentences = combined_text.split('\n')
 sentence_embeddings = embedder.encode(sentences, convert_to_tensor=True)
 
 # Define a function to query ChatGPT-4
-def query_gpt4(prompt):
+def query_gpt4_old(prompt):
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
         max_tokens=150
     )
     return response.choices[0].text.strip()
+
+def query_gpt4(prompt):
+    chat_completion = openai_client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": prompt,
+            }
+        ],
+        model="gpt-4",
+    )
+    return chat_completion
 
 # Generate some text
 prompt = "Once upon a time"
