@@ -1,24 +1,15 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
+import os
+import requests
 import fitz  # PyMuPDF
 import pandas as pd
+import torch
 from sentence_transformers import SentenceTransformer, util
 
-# Load the model and tokenizer
-model_name = "mistral-ai/mistral-7b-instruct"  # Update with the correct model name
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name)
+# Log in to Hugging Face
+os.system("huggingface-cli login")
 
-# Function to generate text using the model
-def generate_text(prompt):
-    inputs = tokenizer(prompt, return_tensors="pt")
-    outputs = model.generate(inputs["input_ids"], max_length=150, temperature=0.7)
-    return tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-# Example usage
-prompt = "Once upon a time"
-generated_text = generate_text(prompt)
-print(generated_text)
+# Run the Mistral model server
+os.system("python -u -m vllm.entrypoints.openai.api_server --host 0.0.0.0 --model mistralai/Mistral-7B-Instruct-v0.2")
 
 # Extract text from CSV
 def extract_text_from_csv(csv_path):
@@ -51,7 +42,26 @@ embedder = SentenceTransformer('all-MiniLM-L6-v2')
 sentences = combined_text.split('\n')
 sentence_embeddings = embedder.encode(sentences, convert_to_tensor=True)
 
-# Function to query model with embeddings
+# Define a function to query Mistral
+def query_mistral(prompt):
+    url = "http://localhost:8000/v1/engines/mistral-7b-instruct/completions"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.getenv('HF_TOKEN')}"
+    }
+    payload = {
+        "prompt": prompt,
+        "max_tokens": 150,
+        "temperature": 0.7
+    }
+    response = requests.post(url, headers=headers, json=payload)
+    return response.json()['choices'][0]['text'].strip()
+
+# Generate some text
+prompt = "Once upon a time"
+generated_text = query_mistral(prompt)
+print(generated_text)
+
 def query_model(query, sentences, sentence_embeddings, top_k=5):
     query_embedding = embedder.encode(query, convert_to_tensor=True)
     cos_scores = util.pytorch_cos_sim(query_embedding, sentence_embeddings)[0]
