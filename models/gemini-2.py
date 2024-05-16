@@ -6,10 +6,9 @@ import torch
 from sentence_transformers import SentenceTransformer, util
 
 # Set up your Google Gemini API key
-os.environ["GOOGLE_API_KEY"] = "your_api_key_here"
 
 # Initialize the Gemini Client
-gemini.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+gemini.configure(api_key=os.getenv("gemini_api_key"))
 
 # Extract text from CSV
 def extract_text_from_csv(csv_path):

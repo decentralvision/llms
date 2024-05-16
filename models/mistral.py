@@ -38,9 +38,10 @@ def extract_text_from_pdf(pdf_path):
         text += page.get_text()
     return text
 
-pdf_path = "/path/to/your/pdf"
-csv_path = "/path/to/your/csv"
+pdf_path = "/Users/alex.mills/Downloads/Invitation_letter-Google-Docs.pdf"
 pdf_text = extract_text_from_pdf(pdf_path)
+
+csv_path = "/Users/alex.mills/Downloads/Jira.csv"
 csv_text = extract_text_from_csv(csv_path)
 
 # Combine extracted text
