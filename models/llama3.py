@@ -4,6 +4,9 @@ import fitz  # PyMuPDF
 import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 
+print(torch.cuda.is_available())
+print(torch.cuda.device_count())
+
 # Specify the model you want to use
 model_id = "meta-llama/Meta-Llama-3-8B-Instruct"  # Adjust to the correct model ID
 
@@ -12,7 +15,7 @@ tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype=torch.bfloat16)
 
 # Create a text generation pipeline
-text_generator = pipeline("text-generation", model=model, tokenizer=tokenizer, device=0)
+text_generator = pipeline("text-generation", model=model, tokenizer=tokenizer, device=-1)
 
 # Function to generate text using the model
 def generate_text(prompt):
@@ -71,4 +74,4 @@ results = query_model(query, sentences, sentence_embeddings)
 
 # Print all items in the results array
 for result in results:
-    print(f"Score: {result[1]:.4f} - Sentence: {result[0]}")
+    print(f"Score: {result:.4f} - Sentence: {result}")
