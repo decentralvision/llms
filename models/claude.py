@@ -25,11 +25,11 @@ def extract_text_from_pdf(pdf_path):
         text += page.get_text()
     return text
 
-pdf_path = "/Users/alex.mills/Downloads/Invitation_letter-Google-Docs.pdf"
+pdf_path = "/Users/alex.mills/Downloads/sales.pdf"
 pdf_text = extract_text_from_pdf(pdf_path)
-
+#
 csv_path = "/Users/alex.mills/Downloads/Jira.csv"
-csv_text = extract_text_from_csv(csv_path)
+csv_text = "" # extract_text_from_csv(csv_path)
 
 
 # Combine extracted text
@@ -44,7 +44,8 @@ sentence_embeddings = embedder.encode(sentences, convert_to_tensor=True)
 def query_claude(prompt):
     url = "https://api.anthropic.com/v1/complete"
     headers = {
-        "Authorization": f"Bearer {os.getenv('claude_api_key')}",
+        # "Authorization": f"Bearer {os.getenv('claude_api_key')}",
+        "x-api-key": f"{os.getenv('claude_api_key')}",
         "Content-Type": "application/json"
     }
     payload = {
@@ -54,7 +55,7 @@ def query_claude(prompt):
         "temperature": 0.7
     }
     response = requests.post(url, headers=headers, json=payload)
-    return response.json()['choices'][0]['text'].strip()
+    return response.json() # ['choices'][0]['text'].strip()
 
 # Generate some text
 prompt = "Once upon a time"

@@ -5,7 +5,7 @@ import pandas as pd
 from sentence_transformers import SentenceTransformer, util
 
 # Load the model and tokenizer
-model_name = "mistral-ai/mistral-7b-instruct"  # Update with the correct model name
+model_name = "EleutherAI/gpt-neo-2.7B" # "mistral-ai/mistral-7b-instruct"  # Update with the correct model name
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name)
 
@@ -38,11 +38,11 @@ def extract_text_from_pdf(pdf_path):
         text += page.get_text()
     return text
 
-pdf_path = "/Users/alex.mills/Downloads/Invitation_letter-Google-Docs.pdf"
+pdf_path = "/Users/alex.mills/Downloads/sales.pdf"
 pdf_text = extract_text_from_pdf(pdf_path)
 
 csv_path = "/Users/alex.mills/Downloads/Jira.csv"
-csv_text = extract_text_from_csv(csv_path)
+csv_text = "" # extract_text_from_csv(csv_path)
 
 # Combine extracted text
 combined_text = pdf_text + "\n" + csv_text
