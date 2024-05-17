@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-python3 -m venv chatgpt-env
-source chatgpt-env/bin/activate
+sudo python3 -m venv chatgpt-env
+sudo source chatgpt-env/bin/activate

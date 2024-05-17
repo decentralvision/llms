@@ -44,10 +44,10 @@ def extract_text_from_pdf(pdf_path):
 
 
 pdf_path = "/Users/alex.mills/Downloads/Invitation_letter-Google-Docs.pdf"
-pdf_text = extract_text_from_pdf(pdf_path)
+pdf_text = "alex created 5 jira tickets"  # extract_text_from_pdf(pdf_path)
 
 csv_path = "/Users/alex.mills/Downloads/Jira.csv"
-csv_text = extract_text_from_csv(csv_path)
+csv_text = "" # extract_text_from_csv(csv_path)
 
 # Combine extracted text
 combined_text = pdf_text + "\n" + csv_text
