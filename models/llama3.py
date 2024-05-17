@@ -74,4 +74,4 @@ results = query_model(query, sentences, sentence_embeddings)
 
 # Print all items in the results array
 for result in results:
-    print(f"Score: {result:.4f} - Sentence: {result}")
+    print(f"Score: {result} - Sentence: {result}")
