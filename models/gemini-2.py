@@ -3,6 +3,7 @@ import google.generativeai as gemini
 import fitz  # PyMuPDF
 import pandas as pd
 import torch
+import google.generativeai as genai
 from sentence_transformers import SentenceTransformer, util
 
 # Set up your Google Gemini API key
@@ -43,7 +44,7 @@ sentences = combined_text.split('\n')
 sentence_embeddings = embedder.encode(sentences, convert_to_tensor=True)
 
 # Define a function to query Google Gemini
-def query_gemini(prompt):
+def query_gemini_OLD(prompt):
     response = gemini.generate_text(
         model="`models/gemini-1.0-ultra",
         prompt=prompt,
@@ -51,12 +52,18 @@ def query_gemini(prompt):
     )
     return response['text'].strip()
 
-# Generate some text
-prompt = "Once upon a time"
-generated_text = query_gemini(prompt)
-print(generated_text)
+model = genai.GenerativeModel('gemini-pro')
 
-def query_model(query, sentences, sentence_embeddings, top_k=5):
+def query_gemini(prompt):
+    response = model.generate_content("Who sold the most this year?")
+    return response
+
+# Generate some text
+# prompt = "Once upon a time"
+# generated_text = query_gemini(prompt)
+# print(generated_text)
+
+def query_model_OLD(query, sentences, sentence_embeddings, top_k=5):
     # Embed the query
     query_embedding = embedder.encode(query, convert_to_tensor=True)
 
@@ -70,10 +77,28 @@ def query_model(query, sentences, sentence_embeddings, top_k=5):
     results = [(sentences[idx], score.item()) for score, idx in zip(top_results[0], top_results[1])]
     return results
 
+def query_model(query, sentences, sentence_embeddings, top_k=5):
+    # Embed the query
+    query_embedding = embedder.encode(query, convert_to_tensor=True)
+
+    # Compute cosine similarity between the query and the sentences
+    cos_scores = util.pytorch_cos_sim(query_embedding, sentence_embeddings)[0]
+
+    # Ensure top_k is not larger than the number of sentences
+    top_k = min(top_k, len(cos_scores))
+
+    # Find the top-k most similar sentences
+    top_results = torch.topk(cos_scores, k=top_k)
+
+    # Retrieve and return the top-k sentences
+    results = [(sentences[idx], score.item()) for score, idx in zip(top_results[0], top_results[1])]
+    return results
+
+
 # Query the model
-query = "how many jira tickets did alex mills create?"
+query = "Who sold the most this year?"
 results = query_model(query, sentences, sentence_embeddings)
 
 # Print all items in the results array
 for result in results:
-    print(f"Score: {result[1]:.4f} - Sentence: {result[0]}")
+    print(f"Score: {result[1]:.4f} - Sentence: {result[0]} - Result: {result}")

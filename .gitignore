@@ -7,3 +7,4 @@ chatgpt-env
 __pycache__
 __pycache__/*
 *.pem
+service-account.json

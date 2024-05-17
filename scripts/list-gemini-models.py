@@ -1,4 +1,7 @@
 from google.cloud import aiplatform
+import os, sys
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "service-account.json"
 
 client = aiplatform.gapic.ModelServiceClient()
 
