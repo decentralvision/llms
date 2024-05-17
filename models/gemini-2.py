@@ -45,7 +45,7 @@ sentence_embeddings = embedder.encode(sentences, convert_to_tensor=True)
 # Define a function to query Google Gemini
 def query_gemini(prompt):
     response = gemini.generate_text(
-        model="gemini-model",
+        model="`models/gemini-1.0-ultra",
         prompt=prompt,
         # max_tokens=150
     )
