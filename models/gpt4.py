@@ -1,4 +1,4 @@
-import faiss
+# import faiss
 import numpy as np
 from openai import OpenAI
 import fitz  # PyMuPDF
