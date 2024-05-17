@@ -35,13 +35,22 @@ def submit_query_to_openai(sentences, query):
 
     return response
 
+def create_sentence(data, headers):
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": f'describe this data in a complete sentence {data}, the fields are {headers}'},
+    ]
+    response = openai_client.chat.completions.create(
+        model="gpt-4",  # Specify the GPT-4 model
+        messages=messages,
+        max_tokens=1000
+    )
+    return response
+
 def describe_data(data, column_descriptions):
     sentences = []
     for row in data:
-        sentence = "In this data, "
-        for col_name, col_desc in column_descriptions.items():
-            sentence += f"{row[col_name]} {col_desc}, "
-        sentence = sentence[:-2] + "."
+        sentence = create_sentence(row, column_descriptions)
         sentences.append(sentence)
     return sentences
 
@@ -51,12 +60,11 @@ def main():
     column_descriptions = {}
     with open(file_path, mode='r') as file:
         reader = csv.DictReader(file)
-        for col_name in reader.fieldnames:
-            col_desc = input(f"Enter a brief description of the '{col_name}' column: ")
-            column_descriptions[col_name] = col_desc
+        column_descriptions = reader.fieldnames
 
     data = load_csv(file_path)
     sentences = describe_data(data, column_descriptions)
+    print(sentences)
     response = submit_query_to_openai(sentences, query)
 
     print(f"Response:\n{response}")
