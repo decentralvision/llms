@@ -5,6 +5,7 @@ import fitz  # PyMuPDF
 import pandas as pd
 import torch, sys, os
 from sentence_transformers import SentenceTransformer, util
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
 # Set up your OpenAI API key
 # openai.api_key = os.getenv('open_ai_key')
@@ -57,14 +58,25 @@ sentences = combined_text.split('\n')
 # Create embeddings for the sentences
 sentence_embeddings = embedder.encode(sentences, convert_to_tensor=True)
 
-# Define a function to query ChatGPT-4
-def query_gpt4_old(prompt):
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=150
-    )
-    return response.choices[0].text.strip()
+model_name='gpt-4'
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name)
+
+def generate_answer(query, context, max_length=50):
+    # Combine query with context
+    input_text = context + "\n\n" + query
+
+    # Tokenize the input query
+    inputs = tokenizer.encode(input_text, return_tensors="pt")
+
+    # Generate the answer
+    outputs = model.generate(inputs, max_length=max_length, num_return_sequences=1, pad_token_id=tokenizer.eos_token_id)
+
+    # Decode the generated answer
+    answer = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
+    return answer
+
 
 def query_gpt4(prompt):
     chat_completion = openai_client.chat.completions.create(
@@ -82,6 +94,8 @@ def query_gpt4(prompt):
 # prompt = "Once upon a time"
 # generated_text = query_gpt4(prompt)
 # print(generated_text)
+
+
 
 def query_model(query, sentences, sentence_embeddings, top_k=5):
     # Embed the query
@@ -102,6 +116,14 @@ def query_model(query, sentences, sentence_embeddings, top_k=5):
         results.append((sentences[idx], score.item()))
 
     return results
+
+
+# Example usage
+query_to_answer = "Who sold the most items in January?"
+answer = generate_answer(query_to_answer, combined_text)
+print(answer)
+
+exit(0)
 
 # Query the model
 query = "Who sold the most items?"
