@@ -79,9 +79,9 @@ def query_gpt4(prompt):
     return chat_completion
 
 # Generate some text
-prompt = "Once upon a time"
-generated_text = query_gpt4(prompt)
-print(generated_text)
+# prompt = "Once upon a time"
+# generated_text = query_gpt4(prompt)
+# print(generated_text)
 
 def query_model(query, sentences, sentence_embeddings, top_k=5):
     # Embed the query
@@ -89,6 +89,9 @@ def query_model(query, sentences, sentence_embeddings, top_k=5):
 
     # Compute cosine similarity between the query and the sentences
     cos_scores = util.pytorch_cos_sim(query_embedding, sentence_embeddings)[0]
+
+    # Ensure top_k is not greater than the number of sentences
+    top_k = min(top_k, len(sentences))
 
     # Find the top-k most similar sentences
     top_results = torch.topk(cos_scores, k=top_k)
@@ -101,9 +104,12 @@ def query_model(query, sentences, sentence_embeddings, top_k=5):
     return results
 
 # Query the model
-query = "how many jira tickets did alex mills create?"
+query = "Who sold the most items?"
 results = query_model(query, sentences, sentence_embeddings)
 
 # Print all items in the results array
+
+print(results)
+
 for result in results:
     print(f"Score: {result[1]:.4f} - Sentence: {result[0]}")
