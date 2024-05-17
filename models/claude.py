@@ -69,6 +69,9 @@ def query_model(query, sentences, sentence_embeddings, top_k=5):
     # Compute cosine similarity between the query and the sentences
     cos_scores = util.pytorch_cos_sim(query_embedding, sentence_embeddings)[0]
 
+    # Ensure top_k does not exceed the number of sentences
+    top_k = min(top_k, len(cos_scores))
+
     # Find the top-k most similar sentences
     top_results = torch.topk(cos_scores, k=top_k)
 
