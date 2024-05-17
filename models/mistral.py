@@ -39,7 +39,8 @@ def extract_text_from_pdf(pdf_path):
     return text
 
 pdf_path = "/Users/alex.mills/Downloads/sales.pdf"
-pdf_text = extract_text_from_pdf(pdf_path)
+# pdf_text = extract_text_from_pdf(pdf_path)
+pdf_text = "Alex sold 5 items in January. Dan sold 8 items in January. Dan also sold 9 items in February. Jeremy sold 6 items in March." # extract_text_from_pdf(pdf_path)
 
 csv_path = "/Users/alex.mills/Downloads/Jira.csv"
 csv_text = "" # extract_text_from_csv(csv_path)
