@@ -17,12 +17,11 @@ openai_client = OpenAI(
 
 # Define your conversation
 
-def submit_query_to_openai(data, query, columns):
+def submit_query_to_openai(sentences, query):
     # Combine the relevant columns from all rows
-    combined_data = [ {col: row[col] for col in columns} for row in data ]
 
     # Form the comprehensive message for OpenAI
-    message = f"{query}\nData:\n{combined_data}"
+    message = f"{query}\nData:\n{sentences}"
     
     messages = [
     {"role": "system", "content": "You are a helpful assistant."},
@@ -36,15 +35,31 @@ def submit_query_to_openai(data, query, columns):
 
     return response
 
+def describe_data(data, column_descriptions):
+    sentences = []
+    for row in data:
+        sentence = "In this data, "
+        for col_name, col_desc in column_descriptions.items():
+            sentence += f"{row[col_name]} {col_desc}, "
+        sentence = sentence[:-2] + "."
+        sentences.append(sentence)
+    return sentences
+
 def main():
     file_path = input("Enter the CSV file path: ")
     query = input("Enter your query: ")
-    columns = input("Enter the column names (comma-separated): ").split(',')
+    column_descriptions = {}
+    with open(file_path, mode='r') as file:
+        reader = csv.DictReader(file)
+        for col_name in reader.fieldnames:
+            col_desc = input(f"Enter a brief description of the '{col_name}' column: ")
+            column_descriptions[col_name] = col_desc
 
     data = load_csv(file_path)
-    response = submit_query_to_openai(data, query, columns)
+    sentences = describe_data(data, column_descriptions)
+    response = submit_query_to_openai(sentences, query)
 
     print(f"Response:\n{response}")
-
+    
 if __name__ == "__main__":
     main()
