@@ -1,0 +1,11 @@
+month,product_id,product_name,units_sold,unit_price,total_sales,sales_representative
+January,101,Widget A,120,19.99,2398.80,John Doe
+January,102,Widget B,80,29.99,2399.20,Jane Smith
+February,101,Widget A,150,19.99,2998.50,Bob Johnson
+February,102,Widget B,90,29.99,2699.10,Alice Williams
+March,101,Widget A,130,19.99,2598.70,Michael Brown
+March,102,Widget B,100,29.99,2999.00,John Doe
+April,101,Widget A,110,19.99,2198.90,Jane Smith
+April,102,Widget B,85,29.99,2549.15,Bob Johnson
+May,101,Widget A,140,19.99,2798.60,Alice Williams
+May,102,Widget B,95,29.99,2849.05,Michael Brown
